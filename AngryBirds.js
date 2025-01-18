@@ -1,3 +1,4 @@
+/*Variables de Matter*/
 const {
   Engine,
   World,
@@ -9,8 +10,8 @@ const {
   Collision,
   Events,
 } = Matter;
-/* Motor de físicas y es el mundo sobre el que se agregan los elementos. */
 
+/* Variables globales*/
 let engine,
   world,
   ground,
@@ -23,8 +24,9 @@ let engine,
   boxImg,
   grassImg;
 
+/*Antes de todo guardamos las imágenes */
 function preload() {
-  /* Cargar imágenes de los pájaros, cajas y césped */
+  /* Cargar imágenes de los pájaros, cajas,césped y cerdito */
   birdImg = [loadImage("assets/red.webp"), loadImage("assets/stella.webp")];
   boxImg = loadImage("assets/box.png");
   grassImg = loadImage("assets/grass.webp");
@@ -103,6 +105,7 @@ function setup() {
   // Añadir paredes al mundo
   World.add(world, walls);
 
+  /*Manejador de eventos*/
   Events.on(engine, "collisionStart", function (event) {
     for (const box of boxes) {
       box.checkCollision(event);
@@ -134,6 +137,8 @@ function draw() {
   /* Mostrar la resortera y el pájaro */
   slingShot.show();
   bird.show();
+
+  /*Muestra los cerditos */
   for (const pig of pigs) {
     pig.show();
   }
