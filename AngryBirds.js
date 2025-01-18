@@ -1,5 +1,14 @@
-const { Engine, World, Bodies, Body, Constraint, Mouse, MouseConstraint } =
-  Matter;
+const {
+  Engine,
+  World,
+  Bodies,
+  Body,
+  Constraint,
+  Mouse,
+  MouseConstraint,
+  Collision,
+  Events,
+} = Matter;
 /* Motor de físicas y es el mundo sobre el que se agregan los elementos. */
 
 let engine,
@@ -40,13 +49,18 @@ function setup() {
   });
   World.add(world, mc);
 
+  /*CREACIÓN DE OBJETOS --------------------------------------------*/
+
   /* Crear el suelo */
   ground = new Ground(width / 2, height - 10, width, 20, grassImg);
 
   /* Crear las cajas y agregarlas al array */
-  for (let j = 0; j < 2; j++) {
-    for (let i = 0; i < 4; i++) {
-      const box = new Box(250 + j * 200, height - 40 * (i + 1), 40, 40, boxImg);
+  for (let j = 0; j < 1; j++) {
+    for (let i = 0; i < 1; i++) {
+      const y = Math.round(height - 40 * (i + 1));
+      const box = new Box(250 + j * 200, y, 40, 40, 100, boxImg, {
+        restitution: 0.7,
+      });
       boxes.push(box);
     }
   }
@@ -54,12 +68,50 @@ function setup() {
   /* Crear el pájaro y la resortera */
   bird = new Bird(100, 375, 25, 2, birdImg[0]);
   slingShot = new SlingShot(bird);
+
+  // Crear paredes
+  const wallThickness = 50;
+  const walls = [
+    Bodies.rectangle(width / 2, -wallThickness / 2, width, wallThickness, {
+      isStatic: true,
+    }), // Pared superior
+    Bodies.rectangle(
+      width / 2,
+      height + wallThickness / 2,
+      width,
+      wallThickness,
+      { isStatic: true }
+    ), // Pared inferior
+    Bodies.rectangle(-wallThickness / 2, height / 2, wallThickness, height, {
+      isStatic: true,
+    }), // Pared izquierda
+    Bodies.rectangle(
+      width + wallThickness / 2,
+      height / 2,
+      wallThickness,
+      height,
+      { isStatic: true }
+    ), // Pared derecha
+  ];
+
+  // Añadir paredes al mundo
+  World.add(world, walls);
+
+  Events.on(engine, "collisionStart", function (event) {
+    for (const box of boxes) {
+      box.checkCollision(event);
+    }
+  });
+
+  /*----------------------------------------------------------------- */
 }
 
 function draw() {
   background(128);
   /* Actualiza constantemente el motor de físicas */
   Engine.update(engine);
+
+  /*Comprueba si hay un botón del mouse presionado y si no manda al pajaro*/
   slingShot.fly(mc);
 
   /* Mostrar el suelo */

@@ -1,10 +1,13 @@
 class Box {
-  constructor(x, y, w, h, img, options = {}) {
+  constructor(x, y, w, h, life, img, options = {}) {
     /* Crear un cuerpo rectangular */
     this.body = Bodies.rectangle(x, y, w, h, options);
+    this.isHit = false;
     this.w = w;
     this.h = h;
     this.img = img;
+    this.initialPosition = { x: x, y: y };
+    this.life = life;
     /* Agregar el cuerpo al mundo */
     World.add(world, this.body);
   }
@@ -19,12 +22,41 @@ class Box {
     image(this.img, 0, 0, this.w, this.h);
     pop();
   }
+
+  checkCollision(event) {
+    const pairs = event.pairs;
+    for (let i = 0; i < pairs.length; i++) {
+      const pair = pairs[i];
+      if (pair.bodyA === this.body || pair.bodyB === this.body) {
+        const penetrationX = pair.collision.penetration.x;
+        const penetrationY = pair.collision.penetration.y;
+        const impactForce =
+          penetrationX * penetrationX + penetrationY * penetrationY;
+
+        console.log(
+          `Penetration X: ${penetrationX}, Penetration Y: ${penetrationY}, Impact Force: ${impactForce}`
+        );
+
+        this.life -= impactForce;
+        if (this.life <= 0) {
+          this.isHit = true;
+          setTimeout(() => {
+            World.remove(world, this.body);
+            const index = boxes.indexOf(this);
+            if (index > -1) {
+              boxes.splice(index, 1);
+            }
+          }, 3000);
+        }
+      }
+    }
+  }
 }
 
 class Ground extends Box {
   constructor(x, y, w, h, img) {
     /* Crear un cuerpo estático para el suelo */
-    super(x, y, w, h, img, { isStatic: true });
+    super(x, y, w, h, 0, img, { isStatic: true });
   }
 }
 
