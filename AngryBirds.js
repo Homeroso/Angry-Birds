@@ -17,6 +17,7 @@ let engine,
   bird,
   slingShot,
   boxes = [],
+  pigs = [],
   mc,
   birdImg = [],
   boxImg,
@@ -27,6 +28,7 @@ function preload() {
   birdImg = [loadImage("assets/red.webp"), loadImage("assets/stella.webp")];
   boxImg = loadImage("assets/box.png");
   grassImg = loadImage("assets/grass.webp");
+  pigImg = loadImage("assets/pig.png");
 }
 
 function setup() {
@@ -69,6 +71,10 @@ function setup() {
   bird = new Bird(100, 375, 25, 2, birdImg[0]);
   slingShot = new SlingShot(bird);
 
+  /*Crear cerdito*/
+  pig = new Pig(200, 300, 25, 100, pigImg);
+  pigs.push(pig);
+
   // Crear paredes
   const wallThickness = 50;
   const walls = [
@@ -100,6 +106,9 @@ function setup() {
   Events.on(engine, "collisionStart", function (event) {
     for (const box of boxes) {
       box.checkCollision(event);
+      for (const pig of pigs) {
+        pig.checkCollision(event);
+      }
     }
   });
 
@@ -125,6 +134,9 @@ function draw() {
   /* Mostrar la resortera y el pájaro */
   slingShot.show();
   bird.show();
+  for (const pig of pigs) {
+    pig.show();
+  }
 }
 
 function keyPressed() {

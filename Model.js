@@ -2,7 +2,7 @@ class Box {
   constructor(x, y, w, h, life, img, options = {}) {
     /* Crear un cuerpo rectangular */
     this.body = Bodies.rectangle(x, y, w, h, options);
-    this.isHit = false;
+    this.isDeath = false;
     this.w = w;
     this.h = h;
     this.img = img;
@@ -39,7 +39,7 @@ class Box {
 
         this.life -= impactForce;
         if (this.life <= 0) {
-          this.isHit = true;
+          this.isDeath = true;
           setTimeout(() => {
             World.remove(world, this.body);
             const index = boxes.indexOf(this);
@@ -137,5 +137,58 @@ class SlingShot {
   attach(bird) {
     /* Volver a unir el pájaro a la resortera */
     this.sling.bodyB = bird.body;
+  }
+}
+class Pig {
+  constructor(x, y, r, life, img, options = {}) {
+    /* Crear un cuerpo circular para el cerdito */
+    this.body = Bodies.circle(x, y, r, options);
+    this.isHit = false;
+    this.r = r;
+    this.img = img;
+    this.life = life;
+    /* Agregar el cuerpo al mundo */
+    World.add(world, this.body);
+  }
+
+  show() {
+    push();
+    imageMode(CENTER);
+    /* Trasladar y rotar el cuerpo */
+    translate(this.body.position.x, this.body.position.y);
+    rotate(this.body.angle);
+    /* Mostrar la imagen del cerdito */
+    image(this.img, 0, 0, 2 * this.r, 2 * this.r);
+    pop();
+  }
+
+  checkCollision(event) {
+    const pairs = event.pairs;
+    for (let i = 0; i < pairs.length; i++) {
+      const pair = pairs[i];
+      if (pair.bodyA === this.body || pair.bodyB === this.body) {
+        const penetrationX = pair.collision.penetration.x;
+        const penetrationY = pair.collision.penetration.y;
+        const impactForce =
+          penetrationX * penetrationX + penetrationY * penetrationY;
+
+        // Imprimir los valores de penetración y la fuerza del impacto
+        console.log(
+          `Penetration X: ${penetrationX}, Penetration Y: ${penetrationY}, Impact Force: ${impactForce}`
+        );
+
+        this.life -= impactForce; // Ajusta el factor según sea necesario
+        if (this.life <= 0) {
+          this.isHit = true;
+          setTimeout(() => {
+            World.remove(world, this.body);
+            const index = pigs.indexOf(this);
+            if (index > -1) {
+              pigs.splice(index, 1);
+            }
+          }, 3000);
+        }
+      }
+    }
   }
 }
