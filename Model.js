@@ -112,15 +112,23 @@ class SlingShot {
   }
 
   show() {
+    push();
+    imageMode(CENTER);
+    // Resize the slingshot image to 50x100 pixels
+    image(this.img, this.sling.pointA.x, this.sling.pointA.y + 50, 80, 130);
+    pop();
     if (this.sling.bodyB) {
-      push();
-      imageMode(CENTER);
-      // Resize the slingshot image to 50x100 pixels
-      image(this.img, this.sling.pointA.x, this.sling.pointA.y + 40, 75, 120);
-      pop();
+      strokeWeight(4);
+      stroke(196, 1, 42);
       /* Dibujar la línea de la resortera */
       line(
-        this.sling.pointA.x,
+        this.sling.pointA.x - 20,
+        this.sling.pointA.y,
+        this.sling.bodyB.position.x,
+        this.sling.bodyB.position.y
+      );
+      line(
+        this.sling.pointA.x + 20,
         this.sling.pointA.y,
         this.sling.bodyB.position.x,
         this.sling.bodyB.position.y
