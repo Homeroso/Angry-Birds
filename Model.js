@@ -1,5 +1,5 @@
 class Box {
-  constructor(x, y, w, h, life, img, options = {}) {
+  constructor(x, y, w, h, life, img, options = {restitution:0.1, friction: 1} ) {
     /* Crear un cuerpo rectangular */
     this.body = Bodies.rectangle(x, y, w, h, options);
     this.isDeath = false;
@@ -35,8 +35,20 @@ class Box {
         const penetrationY = pair.collision.penetration.y;
         const impactForce =
           penetrationX * penetrationX + penetrationY * penetrationY;
+        console.log(
+          `Penetration X: ${penetrationX}, Penetration Y: ${penetrationY}, Impact Force: ${impactForce}`
+        );
 
-        this.life -= impactForce;
+        setTimeout(() => {if (impactForce > 10 ) {
+          this.life -= impactForce;
+        }}, 2000)
+        if (impactForce > 8) {
+          // play a random colision sound
+          const random = Math.floor(Math.random() * 3);
+          collisionSounds[random].play();
+          ajuniga.stop();
+        }
+
         if (this.life <= 0) {
           this.isDeath = true;
           this.tint = color(230, 0, 0);
@@ -74,6 +86,30 @@ class Bird {
     Body.setMass(this.body, mass);
     /* Agregar el cuerpo al mundo */
     World.add(world, this.body);
+  }
+
+  checkCollision(event) {
+    const pairs = event.pairs;
+    for (let i = 0; i < pairs.length; i++) {
+      const pair = pairs[i];
+      if (pair.bodyA === this.body || pair.bodyB === this.body) {
+        const penetrationX = pair.collision.penetration.x;
+        const penetrationY = pair.collision.penetration.y;
+        const impactForce =
+          penetrationX * penetrationX + penetrationY * penetrationY;
+
+        console.log(
+          `BIRD COLLISION Penetration X: ${penetrationX}, Penetration Y: ${penetrationY}, Impact Force: ${impactForce}`
+        );
+
+        if (impactForce > 8) {
+          // play a random colision sound
+          const random = Math.floor(Math.random() * 3);
+          collisionSounds[random].play();
+          ajuniga.stop();
+        }
+      }
+    }
   }
 
   show() {
@@ -170,7 +206,9 @@ class SlingShot {
       slingShotSound.play();
       // Pausa sonido de estiramiento de la resortera
       slingStretch.stop();
+      // Sonido de vuelo para el pájaro
       ajuniga.play();
+      this.isStretched = false;
 
       /* Soltar el pájaro de la resortera */
       this.sling.bodyB.collisionFilter.category = 1;
@@ -184,12 +222,17 @@ class SlingShot {
             this.bird.body.velocity.x ** 2 + this.bird.body.velocity.y ** 2
           );
           if (velocity < 0.5) {
+            console.log('llego');
+
             clearInterval(this.checkVelocity);
             setTimeout(() => {
               if (this.bird && this.bird.body) {
                 World.remove(world, this.bird.body);
                 this.bird.body = null;
                 createNewBird();
+
+                birdLimit--;
+                console.log(birdLimit);
               }
             }, 3000); // Eliminar después de 3 segundos
           }
@@ -211,7 +254,7 @@ class SlingShot {
 }
 
 class Pig {
-  constructor(x, y, r, life, img, deathImg, options = {}) {
+  constructor(x, y, r, life = 100, img, deathImg, options = {}) {
     /* Crear un cuerpo circular para el cerdito */
     this.body = Bodies.circle(x, y, r, options);
     this.isDeath = false;
@@ -250,6 +293,11 @@ class Pig {
           penetrationX * penetrationX + penetrationY * penetrationY;
 
         // Imprimir los valores de penetración y la fuerza del impacto
+
+        console.log(
+          `Penetration X: ${penetrationX}, Penetration Y: ${penetrationY}, Impact Force: ${impactForce}`
+        );
+
 
         this.life -= impactForce;
 

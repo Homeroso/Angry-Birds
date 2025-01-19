@@ -16,42 +16,62 @@ let engine,
   world,
   ground,
   bird,
+  birdLimit = 5,
   slingShot,
   boxes = [],
   pigs = [],
   mc,
   birdImg = [],
   boxImg,
-  grassImg;
+  grassImg,
+  pigImg,
+  woodImg,
+  volumeSlider,
+  volumeIcon,
+  isMuted = false;
 
 /*Antes de todo guardamos las imágenes */
 function preload() {
   /* Cargar imágenes de los pájaros, cajas,césped y cerdito */
 
-  birdImg = [loadImage("assets/red.webp"), loadImage("assets/stella.webp")];
-  boxImg = loadImage("assets/box.png");
-  grassImg = loadImage("assets/grass.webp");
-  pigImg = loadImage("assets/pig.png");
-  deathPigImg = loadImage("assets/Hurt_pig.webp");
-
   birdImg = [loadImage('assets/red.webp'), loadImage('assets/stella.webp')];
   boxImg = loadImage('assets/box.png');
   grassImg = loadImage('assets/grass.webp');
   pigImg = loadImage('assets/pig.png');
+  deathPigImg = loadImage('assets/Hurt_pig.webp');
+
+  birdImg = [loadImage('assets/red.webp'), loadImage('assets/stella.webp')];
+  boxImg = loadImage('assets/box.png');
+  woodImg = loadImage("assets/table.jpg");
+  grassImg = loadImage('assets/grass.webp');
+  pigImg = loadImage('assets/pig.png');
   slingShotImg = loadImage('assets/slingshot.png');
   backgroundImg = loadImage('assets/background.jpg');
-
+  volumeIcon = loadImage('assets/volume.png');
+  // Sonidos
   slingStretch = loadSound('assets/slingStretch.mp3');
   slingStretch.setVolume(0.2);
   slingShotSound = loadSound('assets/slingShotSound.mp3');
   slingShotSound.setVolume(8);
   ajuniga = loadSound('assets/ajuniga.mp3');
   ajuniga.setVolume(0.5);
-
+  ambient = loadSound('assets/ambient.mp3');
+  ambient.setVolume(0.15);
+  collision1 = loadSound('assets/colision1.mp3');
+  collision2 = loadSound('assets/colision2.mp3');
+  collision3 = loadSound('assets/colision3.mp3');
+  collision4 = loadSound('assets/colision4.mp3');
+  collisionSounds = [collision1, collision2, collision3, collision4];
 }
 
 function setup() {
-  const canvas = createCanvas(640, 480);
+  const canvas = createCanvas(720, 480);
+  ambient.loop();
+
+  // Create volume slider
+  volumeSlider = createSlider(0, 0.5, 0.05, 0.01);
+  volumeSlider.position(50, 15);
+  volumeSlider.style('width', '100px');
 
   /* Instanciar motor de físicas y mundo */
   engine = Engine.create();
@@ -76,15 +96,7 @@ function setup() {
   ground = new Ground(width / 2, height - 10, width, 20, grassImg);
 
   /* Crear las cajas y agregarlas al array */
-  for (let j = 0; j < 1; j++) {
-    for (let i = 0; i < 1; i++) {
-      const y = Math.round(height - 40 * (i + 1));
-      const box = new Box(250 + j * 200, y, 40, 40, 100, boxImg, {
-        restitution: 0.7,
-      });
-      boxes.push(box);
-    }
-  }
+  createLevelStructure();
 
   /* Crear el pájaro y la resortera */
   bird = new Bird(100, 375, 25, 2, birdImg[0]);
@@ -130,6 +142,9 @@ function setup() {
     for (const pig of pigs) {
       pig.checkCollision(event);
     }
+    if (bird) {
+      bird.checkCollision(event);
+    }
   });
 
   /*----------------------------------------------------------------- */
@@ -139,6 +154,11 @@ function draw() {
   background(backgroundImg);
   /* Actualiza constantemente el motor de físicas */
   Engine.update(engine);
+
+  // Update ambient volume based on slider value
+  if (!isMuted) {
+    ambient.setVolume(volumeSlider.value());
+  }
 
   /*Comprueba si hay un botón del mouse presionado y si no manda al pajaro*/
   slingShot.fly(mc);
@@ -161,6 +181,25 @@ function draw() {
   for (const pig of pigs) {
     pig.show();
   }
+
+  // Muestra icono de volumen para mutear/desmutear
+  image(volumeIcon, 10, 10, 30, 30);
+
+  if (pigs.length === 0 || birdLimit === 0) {
+    endGame();
+  }
+}
+
+function mousePressed() {
+  // Check if the volume icon is clicked
+  if (mouseX > 120 && mouseX < 150 && mouseY > 10 && mouseY < 40) {
+    isMuted = !isMuted;
+    if (isMuted) {
+      ambient.setVolume(0);
+    } else {
+      ambient.setVolume(volumeSlider.value());
+    }
+  }
 }
 
 function createNewBird() {
@@ -176,7 +215,7 @@ function createNewBird() {
 }
 
 function keyPressed() {
-  if (key == " ") {
+  if (key == ' ' &&  birdLimit > 0) {
     // Eliminar el pájaro actual, si existe
     if (bird && bird.body) {
       World.remove(world, bird.body);
