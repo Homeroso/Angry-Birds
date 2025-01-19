@@ -38,6 +38,9 @@ class Box {
         );
 
         this.life -= impactForce;
+        if (impactForce > 8) {
+        }
+
         if (this.life <= 0) {
           this.isDeath = true;
           setTimeout(() => {
@@ -158,6 +161,7 @@ class SlingShot {
       slingShotSound.play();
       // Pausa sonido de estiramiento de la resortera
       slingStretch.stop();
+      // Sonido de vuelo para el pájaro
       ajuniga.play();
 
       /* Soltar el pájaro de la resortera */

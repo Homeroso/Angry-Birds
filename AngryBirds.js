@@ -33,17 +33,20 @@ function preload() {
   pigImg = loadImage('assets/pig.png');
   slingShotImg = loadImage('assets/slingshot.png');
   backgroundImg = loadImage('assets/background.jpg');
-
+  // Sonidos
   slingStretch = loadSound('assets/slingStretch.mp3');
   slingStretch.setVolume(0.2);
   slingShotSound = loadSound('assets/slingShotSound.mp3');
   slingShotSound.setVolume(8);
   ajuniga = loadSound('assets/ajuniga.mp3');
   ajuniga.setVolume(0.5);
+  ambient = loadSound('assets/ambient.mp3');
+  ambient.setVolume(0.15);
 }
 
 function setup() {
   const canvas = createCanvas(640, 480);
+  ambient.loop();
 
   /* Instanciar motor de físicas y mundo */
   engine = Engine.create();
