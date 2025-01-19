@@ -1,5 +1,5 @@
 class Box{
-  constructor(x,y,w,h,img,options={}){
+  constructor(x,y,w,h,img,options={restitution: 0.3, friction: 1}){
     this.body = Bodies.rectangle(
       x,y,w,h, options);
     this.w = w;
@@ -85,6 +85,7 @@ class SlingShot {
        this.sling.bodyB.position.x > this.sling.pointA.x + 10){
       this.sling.bodyB.collisionFilter.category = 1;  
       this.sling.bodyB = null;
+      birdLimit -=1
     }
   }
   
