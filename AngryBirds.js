@@ -110,9 +110,9 @@ function setup() {
   Events.on(engine, "collisionStart", function (event) {
     for (const box of boxes) {
       box.checkCollision(event);
-      for (const pig of pigs) {
-        pig.checkCollision(event);
-      }
+    }
+    for (const pig of pigs) {
+      pig.checkCollision(event);
     }
   });
 
@@ -145,6 +145,18 @@ function draw() {
   for (const pig of pigs) {
     pig.show();
   }
+}
+
+function createNewBird() {
+  // Eliminar el pájaro actual, si existe
+  if (bird && bird.body) {
+    World.remove(world, bird.body);
+    bird = null;
+  }
+  // Crear un nuevo pájaro
+  const index = floor(random(0, birdImg.length));
+  bird = new Bird(100, 375, 25, 2, birdImg[index]);
+  slingShot.attach(bird);
 }
 
 function keyPressed() {

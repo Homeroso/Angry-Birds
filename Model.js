@@ -36,10 +36,6 @@ class Box {
         const impactForce =
           penetrationX * penetrationX + penetrationY * penetrationY;
 
-        console.log(
-          `Penetration X: ${penetrationX}, Penetration Y: ${penetrationY}, Impact Force: ${impactForce}`
-        );
-
         this.life -= impactForce;
         if (this.life <= 0) {
           this.isDeath = true;
@@ -143,14 +139,13 @@ class SlingShot {
           const velocity = Math.sqrt(
             this.bird.body.velocity.x ** 2 + this.bird.body.velocity.y ** 2
           );
-          console.log(velocity);
           if (velocity < 0.5) {
-            console.log("llego");
             clearInterval(this.checkVelocity);
             setTimeout(() => {
               if (this.bird && this.bird.body) {
                 World.remove(world, this.bird.body);
                 this.bird.body = null;
+                createNewBird();
               }
             }, 3000); // Eliminar después de 3 segundos
           }
@@ -211,9 +206,6 @@ class Pig {
           penetrationX * penetrationX + penetrationY * penetrationY;
 
         // Imprimir los valores de penetración y la fuerza del impacto
-        console.log(
-          `Penetration X: ${penetrationX}, Penetration Y: ${penetrationY}, Impact Force: ${impactForce}`
-        );
 
         this.life -= impactForce;
         if (this.life <= 0) {
