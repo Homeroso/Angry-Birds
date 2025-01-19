@@ -35,7 +35,6 @@ class Box {
         const penetrationY = pair.collision.penetration.y;
         const impactForce =
           penetrationX * penetrationX + penetrationY * penetrationY;
-
         console.log(
           `Penetration X: ${penetrationX}, Penetration Y: ${penetrationY}, Impact Force: ${impactForce}`
         );
@@ -133,6 +132,7 @@ class Bird {
 
 class SlingShot {
   constructor(bird) {
+    this.maxStretch = 150;
     /* Crear una restricción para la resortera */
     this.sling = Constraint.create({
       pointA: {
@@ -156,12 +156,22 @@ class SlingShot {
     // Resize the slingshot image to 50x100 pixels
     image(this.img, this.sling.pointA.x, this.sling.pointA.y + 50, 80, 130);
     pop();
+
     if (this.sling.bodyB) {
       const pointA = this.sling.pointA;
       const pointB = this.sling.bodyB.position;
 
       // Calculate the distance between pointA and pointB
       const distance = dist(pointA.x, pointA.y, pointB.x, pointB.y);
+
+      if (distance > this.maxStretch) {
+        const angle = atan2(pointB.y - pointA.y, pointB.x - pointA.x);
+        const newX = pointA.x + cos(angle) * this.maxStretch;
+        const newY = pointA.y + sin(angle) * this.maxStretch;
+
+        // Set the position of bodyB without affecting its angle
+        Matter.Body.setPosition(this.sling.bodyB, { x: newX, y: newY });
+      }
 
       // Play the slingStretch sound if the slingshot is stretched
       if (distance > 10 && !this.isStretched) {
@@ -211,14 +221,16 @@ class SlingShot {
           const velocity = Math.sqrt(
             this.bird.body.velocity.x ** 2 + this.bird.body.velocity.y ** 2
           );
-          console.log(velocity);
           if (velocity < 0.5) {
             console.log('llego');
+
             clearInterval(this.checkVelocity);
             setTimeout(() => {
               if (this.bird && this.bird.body) {
                 World.remove(world, this.bird.body);
                 this.bird.body = null;
+                createNewBird();
+
                 birdLimit--;
                 console.log(birdLimit);
               }
@@ -281,9 +293,11 @@ class Pig {
           penetrationX * penetrationX + penetrationY * penetrationY;
 
         // Imprimir los valores de penetración y la fuerza del impacto
+
         console.log(
           `Penetration X: ${penetrationX}, Penetration Y: ${penetrationY}, Impact Force: ${impactForce}`
         );
+
 
         this.life -= impactForce;
 
