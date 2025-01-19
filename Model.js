@@ -41,12 +41,6 @@ class Box {
         );
 
         this.life -= impactForce;
-        if (impactForce > 8) {
-          // play a random colision sound
-          const random = Math.floor(Math.random() * 3);
-          collisionSounds[random].play();
-          ajuniga.stop();
-        }
 
         if (this.life <= 0) {
           this.isDeath = true;
@@ -72,7 +66,7 @@ class Ground extends Box {
 }
 
 class Bird {
-  constructor(x, y, r, mass, img) {
+  constructor(x, y, r, mass, typeNumber = 0) {
     /* Crear un cuerpo circular para el pájaro */
     this.body = Bodies.circle(x, y, r, {
       restitution: 0.7,
@@ -80,7 +74,9 @@ class Bird {
         category: 2,
       },
     });
-    this.img = img;
+    this.img = birds[typeNumber].img;
+    this.flyingSound = birds[typeNumber].flyingSound;
+    this.collisionSounds = birds[typeNumber].collisionSounds;
     /* Establecer la masa del pájaro */
     Body.setMass(this.body, mass);
     /* Agregar el cuerpo al mundo */
@@ -103,9 +99,10 @@ class Bird {
 
         if (impactForce > 8) {
           // play a random colision sound
-          const random = Math.floor(Math.random() * 3);
-          collisionSounds[random].play();
-          ajuniga.stop();
+          const random = Math.floor(
+            Math.random() * this.collisionSounds.length
+          );
+          this.collisionSounds[random].play();
         }
       }
     }
@@ -195,7 +192,7 @@ class SlingShot {
       // Pausa sonido de estiramiento de la resortera
       slingStretch.stop();
       // Sonido de vuelo para el pájaro
-      ajuniga.play();
+      this.bird.flyingSound.play();
       this.isStretched = false;
 
       /* Soltar el pájaro de la resortera */
@@ -232,7 +229,7 @@ class SlingShot {
       clearInterval(this.checkVelocity); // Limpiar el intervalo si existe
     }
     /* Volver a unir el pájaro a la resortera */
-    this.bird = bird.body;
+    this.bird = bird;
     this.sling.bodyB = bird.body;
   }
 }
