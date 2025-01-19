@@ -16,6 +16,7 @@ let engine,
   world,
   ground,
   bird,
+  birdLimit = 5,
   slingShot,
   boxes = [],
   pigs = [],
@@ -23,6 +24,8 @@ let engine,
   birdImg = [],
   boxImg,
   grassImg,
+  pigImg,
+  woodImg,
   volumeSlider,
   volumeIcon,
   isMuted = false;
@@ -39,6 +42,7 @@ function preload() {
 
   birdImg = [loadImage('assets/red.webp'), loadImage('assets/stella.webp')];
   boxImg = loadImage('assets/box.png');
+  woodImg = loadImage("assets/table.jpg");
   grassImg = loadImage('assets/grass.webp');
   pigImg = loadImage('assets/pig.png');
   slingShotImg = loadImage('assets/slingshot.png');
@@ -61,7 +65,7 @@ function preload() {
 }
 
 function setup() {
-  const canvas = createCanvas(640, 480);
+  const canvas = createCanvas(720, 480);
   ambient.loop();
 
   // Create volume slider
@@ -92,15 +96,7 @@ function setup() {
   ground = new Ground(width / 2, height - 10, width, 20, grassImg);
 
   /* Crear las cajas y agregarlas al array */
-  for (let j = 0; j < 1; j++) {
-    for (let i = 0; i < 1; i++) {
-      const y = Math.round(height - 40 * (i + 1));
-      const box = new Box(250 + j * 200, y, 40, 40, 100, boxImg, {
-        restitution: 0.7,
-      });
-      boxes.push(box);
-    }
-  }
+  createLevelStructure();
 
   /* Crear el pájaro y la resortera */
   bird = new Bird(100, 375, 25, 2, birdImg[0]);
@@ -188,6 +184,10 @@ function draw() {
 
   // Muestra icono de volumen para mutear/desmutear
   image(volumeIcon, 10, 10, 30, 30);
+
+  if (pigs.length === 0 || birdLimit === 0) {
+    endGame();
+  }
 }
 
 function mousePressed() {
@@ -203,7 +203,7 @@ function mousePressed() {
 }
 
 function keyPressed() {
-  if (key == ' ') {
+  if (key == ' ' &&  birdLimit > 0) {
     // Eliminar el pájaro actual, si existe
     if (bird && bird.body) {
       World.remove(world, bird.body);

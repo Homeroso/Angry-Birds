@@ -1,5 +1,5 @@
 class Box {
-  constructor(x, y, w, h, life, img, options = {}) {
+  constructor(x, y, w, h, life, img, options = {restitution:0.1, friction: 1} ) {
     /* Crear un cuerpo rectangular */
     this.body = Bodies.rectangle(x, y, w, h, options);
     this.isDeath = false;
@@ -40,7 +40,9 @@ class Box {
           `Penetration X: ${penetrationX}, Penetration Y: ${penetrationY}, Impact Force: ${impactForce}`
         );
 
-        this.life -= impactForce;
+        setTimeout(() => {if (impactForce > 10 ) {
+          this.life -= impactForce;
+        }}, 2000)
         if (impactForce > 8) {
           // play a random colision sound
           const random = Math.floor(Math.random() * 3);
@@ -217,6 +219,8 @@ class SlingShot {
               if (this.bird && this.bird.body) {
                 World.remove(world, this.bird.body);
                 this.bird.body = null;
+                birdLimit--;
+                console.log(birdLimit);
               }
             }, 3000); // Eliminar después de 3 segundos
           }
