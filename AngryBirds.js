@@ -27,11 +27,27 @@ let engine,
 /*Antes de todo guardamos las imágenes */
 function preload() {
   /* Cargar imágenes de los pájaros, cajas,césped y cerdito */
+
   birdImg = [loadImage("assets/red.webp"), loadImage("assets/stella.webp")];
   boxImg = loadImage("assets/box.png");
   grassImg = loadImage("assets/grass.webp");
   pigImg = loadImage("assets/pig.png");
   deathPigImg = loadImage("assets/Hurt_pig.webp");
+
+  birdImg = [loadImage('assets/red.webp'), loadImage('assets/stella.webp')];
+  boxImg = loadImage('assets/box.png');
+  grassImg = loadImage('assets/grass.webp');
+  pigImg = loadImage('assets/pig.png');
+  slingShotImg = loadImage('assets/slingshot.png');
+  backgroundImg = loadImage('assets/background.jpg');
+
+  slingStretch = loadSound('assets/slingStretch.mp3');
+  slingStretch.setVolume(0.2);
+  slingShotSound = loadSound('assets/slingShotSound.mp3');
+  slingShotSound.setVolume(8);
+  ajuniga = loadSound('assets/ajuniga.mp3');
+  ajuniga.setVolume(0.5);
+
 }
 
 function setup() {
@@ -107,7 +123,7 @@ function setup() {
   World.add(world, walls);
 
   /*Manejador de eventos*/
-  Events.on(engine, "collisionStart", function (event) {
+  Events.on(engine, 'collisionStart', function (event) {
     for (const box of boxes) {
       box.checkCollision(event);
       for (const pig of pigs) {
@@ -120,7 +136,7 @@ function setup() {
 }
 
 function draw() {
-  background(128);
+  background(backgroundImg);
   /* Actualiza constantemente el motor de físicas */
   Engine.update(engine);
 
@@ -154,7 +170,6 @@ function keyPressed() {
       World.remove(world, bird.body);
       bird = null;
     }
-    // Crear un nuevo pájaro
     const index = floor(random(0, birdImg.length));
     bird = new Bird(100, 375, 25, 2, birdImg[index]);
     slingShot.attach(bird);

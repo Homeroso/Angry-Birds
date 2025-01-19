@@ -110,16 +110,42 @@ class SlingShot {
       stiffness: 0.05,
       length: 5,
     });
+    this.img = slingShotImg;
+    this.isStretched = false;
     /* Agregar la restricción al mundo */
     World.add(world, this.sling);
     this.bird = bird;
   }
 
   show() {
+    push();
+    imageMode(CENTER);
+    // Resize the slingshot image to 50x100 pixels
+    image(this.img, this.sling.pointA.x, this.sling.pointA.y + 50, 80, 130);
+    pop();
     if (this.sling.bodyB) {
+      const pointA = this.sling.pointA;
+      const pointB = this.sling.bodyB.position;
+
+      // Calculate the distance between pointA and pointB
+      const distance = dist(pointA.x, pointA.y, pointB.x, pointB.y);
+
+      // Play the slingStretch sound if the slingshot is stretched
+      if (distance > 10 && !this.isStretched) {
+        slingStretch.play();
+        this.isStretched = true;
+      }
+      strokeWeight(4);
+      stroke(196, 1, 42);
       /* Dibujar la línea de la resortera */
       line(
-        this.sling.pointA.x,
+        this.sling.pointA.x - 20,
+        this.sling.pointA.y,
+        this.sling.bodyB.position.x,
+        this.sling.bodyB.position.y
+      );
+      line(
+        this.sling.pointA.x + 20,
         this.sling.pointA.y,
         this.sling.bodyB.position.x,
         this.sling.bodyB.position.y
@@ -133,6 +159,13 @@ class SlingShot {
       mc.mouse.button === -1 &&
       this.sling.bodyB.position.x > this.sling.pointA.x + 10
     ) {
+      // Reproduce el sonido de tiro la resortera
+      slingShotSound.play();
+      // Pausa sonido de estiramiento de la resortera
+      slingStretch.stop();
+      ajuniga.play();
+
+      /* Soltar el pájaro de la resortera */
       this.sling.bodyB.collisionFilter.category = 1;
       this.sling.bodyB = null;
 
@@ -215,7 +248,9 @@ class Pig {
           `Penetration X: ${penetrationX}, Penetration Y: ${penetrationY}, Impact Force: ${impactForce}`
         );
 
+
         this.life -= impactForce;
+
         if (this.life <= 0) {
           this.isDeath = true;
           setTimeout(() => {
