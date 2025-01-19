@@ -214,6 +214,11 @@ function draw() {
   // Muestra icono de volumen para mutear/desmutear
   image(volumeIcon, 10, 10, 30, 30);
 
+  // Display bird limit counter
+  fill(255);
+  textSize(16);
+  text(`Birds left: ${birdLimit}`, width - 120, 30);
+
   if (pigs.length === 0 || birdLimit === 0) {
     endGame();
   }
