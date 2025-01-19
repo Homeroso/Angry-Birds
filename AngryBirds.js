@@ -241,8 +241,8 @@ function createNewBird() {
   if (bird && bird.body) {
     World.remove(world, bird.body);
     bird = null;
-    birdLimit -= 1;
   }
+  birdLimit -= 1;
   // Crear un nuevo pájaro
   const index = floor(random(0, birdImg.length));
   bird = new Bird(100, 375, 25, 2, birdImg[index]);
