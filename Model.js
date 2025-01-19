@@ -9,6 +9,7 @@ class Box {
     this.initialPosition = { x: x, y: y };
     this.life = life;
     this.tint = color(255, 255, 255);
+    this.checkVelocity = null;
     /* Agregar el cuerpo al mundo */
     World.add(world, this.body);
   }
@@ -136,7 +137,7 @@ class SlingShot {
       this.sling.bodyB = null;
 
       // Verificar la velocidad del pájaro y eliminarlo si es baja
-      const checkVelocity = setInterval(() => {
+      this.checkVelocity = setInterval(() => {
         this.bird = bird;
         if (this.bird && this.bird.body) {
           const velocity = Math.sqrt(
@@ -145,7 +146,7 @@ class SlingShot {
           console.log(velocity);
           if (velocity < 0.5) {
             console.log("llego");
-            clearInterval(checkVelocity);
+            clearInterval(this.checkVelocity);
             setTimeout(() => {
               if (this.bird && this.bird.body) {
                 World.remove(world, this.bird.body);
@@ -154,13 +155,16 @@ class SlingShot {
             }, 3000); // Eliminar después de 3 segundos
           }
         } else {
-          clearInterval(checkVelocity);
+          clearInterval(this.checkVelocity);
         }
       }, 100); // Verificar cada 100 ms
     }
   }
 
   attach(bird) {
+    if (this.checkVelocity) {
+      clearInterval(this.checkVelocity); // Limpiar el intervalo si existe
+    }
     /* Volver a unir el pájaro a la resortera */
     this.bird = bird.body;
     this.sling.bodyB = bird.body;
