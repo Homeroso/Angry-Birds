@@ -1,5 +1,13 @@
 class Box {
-  constructor(x, y, w, h, life, img, options = {restitution:0.1, friction: 1} ) {
+  constructor(
+    x,
+    y,
+    w,
+    h,
+    life,
+    img,
+    options = { restitution: 0.1, friction: 1 }
+  ) {
     /* Crear un cuerpo rectangular */
     this.body = Bodies.rectangle(x, y, w, h, options);
     this.isDeath = false;
@@ -31,34 +39,43 @@ class Box {
     for (let i = 0; i < pairs.length; i++) {
       const pair = pairs[i];
       if (pair.bodyA === this.body || pair.bodyB === this.body) {
-        const penetrationX = pair.collision.penetration.x;
-        const penetrationY = pair.collision.penetration.y;
-        const impactForce =
-          penetrationX * penetrationX + penetrationY * penetrationY;
-        console.log(
-          `Penetration X: ${penetrationX}, Penetration Y: ${penetrationY}, Impact Force: ${impactForce}`
-        );
+        const otherBody = pair.bodyA === this.body ? pair.bodyB : pair.bodyA;
 
-        setTimeout(() => {if (impactForce > 10 ) {
-          this.life -= impactForce;
-        }}, 2000)
-        if (impactForce > 8) {
-          // play a random colision sound
-          const random = Math.floor(Math.random() * 3);
-          collisionSounds[random].play();
-          ajuniga.stop();
-        }
+        // Verificar si el otro cuerpo es una caja
+        const isOtherBox = boxes.some((box) => box.body === otherBody);
 
-        if (this.life <= 0) {
-          this.isDeath = true;
-          this.tint = color(230, 0, 0);
+        if (!isOtherBox) {
+          const penetrationX = pair.collision.penetration.x;
+          const penetrationY = pair.collision.penetration.y;
+          const impactForce =
+            penetrationX * penetrationX + penetrationY * penetrationY;
+          console.log(
+            `Penetration X: ${penetrationX}, Penetration Y: ${penetrationY}, Impact Force: ${impactForce}`
+          );
+
           setTimeout(() => {
-            World.remove(world, this.body);
-            const index = boxes.indexOf(this);
-            if (index > -1) {
-              boxes.splice(index, 1);
+            if (impactForce > 10) {
+              this.life -= impactForce * 10;
             }
-          }, 3000);
+          }, 2000);
+          if (impactForce > 8) {
+            // play a random colision sound
+            const random = Math.floor(Math.random() * 3);
+            collisionSounds[random].play();
+            ajuniga.stop();
+          }
+
+          if (this.life <= 0) {
+            this.isDeath = true;
+            this.tint = color(230, 0, 0);
+            setTimeout(() => {
+              World.remove(world, this.body);
+              const index = boxes.indexOf(this);
+              if (index > -1) {
+                boxes.splice(index, 1);
+              }
+            }, 3000);
+          }
         }
       }
     }
@@ -97,10 +114,6 @@ class Bird {
         const penetrationY = pair.collision.penetration.y;
         const impactForce =
           penetrationX * penetrationX + penetrationY * penetrationY;
-
-        console.log(
-          `BIRD COLLISION Penetration X: ${penetrationX}, Penetration Y: ${penetrationY}, Impact Force: ${impactForce}`
-        );
 
         if (impactForce > 8) {
           // play a random colision sound
@@ -222,8 +235,6 @@ class SlingShot {
             this.bird.body.velocity.x ** 2 + this.bird.body.velocity.y ** 2
           );
           if (velocity < 0.5) {
-            console.log('llego');
-
             clearInterval(this.checkVelocity);
             setTimeout(() => {
               if (this.bird && this.bird.body) {
@@ -232,7 +243,6 @@ class SlingShot {
                 createNewBird();
 
                 birdLimit--;
-                console.log(birdLimit);
               }
             }, 3000); // Eliminar después de 3 segundos
           }
@@ -294,12 +304,7 @@ class Pig {
 
         // Imprimir los valores de penetración y la fuerza del impacto
 
-        console.log(
-          `Penetration X: ${penetrationX}, Penetration Y: ${penetrationY}, Impact Force: ${impactForce}`
-        );
-
-
-        this.life -= impactForce;
+        this.life -= impactForce * 8;
 
         if (this.life <= 0) {
           this.isDeath = true;
