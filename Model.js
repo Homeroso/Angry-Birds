@@ -168,6 +168,7 @@ class SlingShot {
       slingStretch.stop();
       // Sonido de vuelo para el pájaro
       ajuniga.play();
+      this.isStretched = false;
 
       /* Soltar el pájaro de la resortera */
       this.sling.bodyB.collisionFilter.category = 1;
@@ -182,7 +183,7 @@ class SlingShot {
           );
           console.log(velocity);
           if (velocity < 0.5) {
-            console.log("llego");
+            console.log('llego');
             clearInterval(this.checkVelocity);
             setTimeout(() => {
               if (this.bird && this.bird.body) {
@@ -209,7 +210,7 @@ class SlingShot {
 }
 
 class Pig {
-  constructor(x, y, r, life, img, deathImg, options = {}) {
+  constructor(x, y, r, life = 100, img, deathImg, options = {}) {
     /* Crear un cuerpo circular para el cerdito */
     this.body = Bodies.circle(x, y, r, options);
     this.isDeath = false;
@@ -251,7 +252,6 @@ class Pig {
         console.log(
           `Penetration X: ${penetrationX}, Penetration Y: ${penetrationY}, Impact Force: ${impactForce}`
         );
-
 
         this.life -= impactForce;
 

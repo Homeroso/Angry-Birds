@@ -22,7 +22,10 @@ let engine,
   mc,
   birdImg = [],
   boxImg,
-  grassImg;
+  grassImg,
+  volumeSlider,
+  volumeIcon,
+  isMuted = false;
 
 /*Antes de todo guardamos las imágenes */
 function preload() {
@@ -40,6 +43,7 @@ function preload() {
   pigImg = loadImage('assets/pig.png');
   slingShotImg = loadImage('assets/slingshot.png');
   backgroundImg = loadImage('assets/background.jpg');
+  volumeIcon = loadImage('assets/volume.png');
   // Sonidos
   slingStretch = loadSound('assets/slingStretch.mp3');
   slingStretch.setVolume(0.2);
@@ -54,6 +58,11 @@ function preload() {
 function setup() {
   const canvas = createCanvas(640, 480);
   ambient.loop();
+
+  // Create volume slider
+  volumeSlider = createSlider(0, 0.5, 0.05, 0.01);
+  volumeSlider.position(50, 15);
+  volumeSlider.style('width', '100px');
 
   /* Instanciar motor de físicas y mundo */
   engine = Engine.create();
@@ -142,6 +151,11 @@ function draw() {
   /* Actualiza constantemente el motor de físicas */
   Engine.update(engine);
 
+  // Update ambient volume based on slider value
+  if (!isMuted) {
+    ambient.setVolume(volumeSlider.value());
+  }
+
   /*Comprueba si hay un botón del mouse presionado y si no manda al pajaro*/
   slingShot.fly(mc);
 
@@ -162,6 +176,21 @@ function draw() {
   /*Muestra los cerditos */
   for (const pig of pigs) {
     pig.show();
+  }
+
+  // Muestra icono de volumen para mutear/desmutear
+  image(volumeIcon, 10, 10, 30, 30);
+}
+
+function mousePressed() {
+  // Check if the volume icon is clicked
+  if (mouseX > 120 && mouseX < 150 && mouseY > 10 && mouseY < 40) {
+    isMuted = !isMuted;
+    if (isMuted) {
+      ambient.setVolume(0);
+    } else {
+      ambient.setVolume(volumeSlider.value());
+    }
   }
 }
 
