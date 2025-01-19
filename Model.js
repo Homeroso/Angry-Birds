@@ -39,10 +39,16 @@ class Box {
         console.log(
           `Penetration X: ${penetrationX}, Penetration Y: ${penetrationY}, Impact Force: ${impactForce}`
         );
-        
+
         setTimeout(() => {if (impactForce > 10 ) {
           this.life -= impactForce;
         }}, 2000)
+        if (impactForce > 8) {
+          // play a random colision sound
+          const random = Math.floor(Math.random() * 3);
+          collisionSounds[random].play();
+          ajuniga.stop();
+        }
 
         if (this.life <= 0) {
           this.isDeath = true;
@@ -81,6 +87,30 @@ class Bird {
     Body.setMass(this.body, mass);
     /* Agregar el cuerpo al mundo */
     World.add(world, this.body);
+  }
+
+  checkCollision(event) {
+    const pairs = event.pairs;
+    for (let i = 0; i < pairs.length; i++) {
+      const pair = pairs[i];
+      if (pair.bodyA === this.body || pair.bodyB === this.body) {
+        const penetrationX = pair.collision.penetration.x;
+        const penetrationY = pair.collision.penetration.y;
+        const impactForce =
+          penetrationX * penetrationX + penetrationY * penetrationY;
+
+        console.log(
+          `BIRD COLLISION Penetration X: ${penetrationX}, Penetration Y: ${penetrationY}, Impact Force: ${impactForce}`
+        );
+
+        if (impactForce > 8) {
+          // play a random colision sound
+          const random = Math.floor(Math.random() * 3);
+          collisionSounds[random].play();
+          ajuniga.stop();
+        }
+      }
+    }
   }
 
   show() {
