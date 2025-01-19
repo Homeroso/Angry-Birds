@@ -230,15 +230,14 @@ class SlingShot {
           const velocity = Math.sqrt(
             this.bird.body.velocity.x ** 2 + this.bird.body.velocity.y ** 2
           );
-          if (velocity < 0.5) {
+          if (velocity < 0.2) {
             clearInterval(this.checkVelocity);
-            setTimeout(() => {
-              if (this.bird && this.bird.body) {
-                World.remove(world, this.bird.body);
-                this.bird.body = null;
-                createNewBird();
-              }
-            }, 3000); // Eliminar después de 3 segundos
+            if (this.bird && this.bird.body) {
+              World.remove(world, this.bird.body);
+              this.bird.body = null;
+              createNewBird();
+            }
+            // Eliminar después de 3 segundos
           }
         } else {
           clearInterval(this.checkVelocity);
