@@ -252,15 +252,7 @@ function createNewBird() {
 function keyPressed() {
   if (key == " " && birdLimit > 0) {
     // Eliminar el pájaro actual, si existe
-    if (bird && bird.body) {
-      World.remove(world, bird.body);
-      bird = null;
-      birdLimit -= 1;
-    }
-    // Crea indice entre 0 y birds.length
-    const index = floor(random(0, birds.length));
-    bird = new Bird(200, 375, 25, 2, index); // Move the slingshot to the right
-    slingShot.attach(bird);
+    createNewBird();
   }
 
   if (key == "r") {
@@ -299,7 +291,7 @@ function restartGame() {
   createLevelStructure();
 
   /* Crear el pájaro y la resortera */
-  bird = new Bird(100, 375, 25, 2, birdImg[0]);
+  bird = new Bird(200, 375, 25, 2, birdImg[0]);
   slingShot = new SlingShot(bird);
 
   // Crear paredes
