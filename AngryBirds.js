@@ -98,7 +98,7 @@ function preload() {
 }
 
 function setup() {
-  const canvas = createCanvas(720, 480);
+  const canvas = createCanvas(1000, 480); // Resize the window to be wider
   ambient.loop();
 
   // Create volume slider
@@ -132,7 +132,7 @@ function setup() {
   createLevelStructure();
 
   /* Crear el pájaro y la resortera */
-  bird = new Bird(100, 375, 25, 2, birdImg[0]);
+  bird = new Bird(200, 375, 25, 2, 0); // Move the slingshot to the right
   slingShot = new SlingShot(bird);
 
   // Crear paredes
@@ -245,7 +245,7 @@ function createNewBird() {
   birdLimit -= 1;
   // Crear un nuevo pájaro
   const index = floor(random(0, birdImg.length));
-  bird = new Bird(100, 375, 25, 2, birdImg[index]);
+  bird = new Bird(200, 375, 25, 2, index); // Move the slingshot to the right
   slingShot.attach(bird);
 }
 
@@ -259,7 +259,7 @@ function keyPressed() {
     }
     // Crea indice entre 0 y birds.length
     const index = floor(random(0, birds.length));
-    bird = new Bird(100, 375, 25, 2, index);
+    bird = new Bird(200, 375, 25, 2, index); // Move the slingshot to the right
     slingShot.attach(bird);
   }
 }

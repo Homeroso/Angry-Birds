@@ -90,14 +90,14 @@ function generateTowerStructure(
 }
 
 function createLevelStructure() {
-  //Create level structures)
-  generateBridgeStructure(670, height - 20, 30, 30, 90, 5, 60);
-  generateTowerStructure(640, height - 20, 30, 30, 2);
-  generateTowerStructure(610, height - 20, 30, 30, 3);
-  generateTowerStructure(580, height - 20, 30, 30, 5);
-  generateTowerStructure(520, height - 20, 30, 30, 5);
-  generateTowerStructure(550, height - 20, 30, 30, 4);
-  generateTowerStructure(490, height - 20, 30, 30, 3);
-  generateTowerStructure(460, height - 20, 30, 30, 2);
-  generateBridgeStructure(370, height - 20, 30, 30, 90, 5, 60);
+  //Create level structures
+  generateBridgeStructure(800, height - 20, 30, 30, 90, 5, 60);
+  generateTowerStructure(770, height - 20, 30, 30, 2);
+  generateTowerStructure(740, height - 20, 30, 30, 3);
+  generateTowerStructure(710, height - 20, 30, 30, 5);
+  generateTowerStructure(650, height - 20, 30, 30, 5);
+  generateTowerStructure(680, height - 20, 30, 30, 4);
+  generateTowerStructure(620, height - 20, 30, 30, 3);
+  generateTowerStructure(590, height - 20, 30, 30, 2);
+  generateBridgeStructure(500, height - 20, 30, 30, 90, 5, 60);
 }
