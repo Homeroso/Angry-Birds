@@ -244,7 +244,7 @@ function createNewBird() {
   }
   birdLimit -= 1;
   // Crear un nuevo pájaro
-  const index = floor(random(0, birdImg.length));
+  const index = floor(random(0, birds.length));
   bird = new Bird(200, 375, 25, 2, index); // Move the slingshot to the right
   slingShot.attach(bird);
 }
