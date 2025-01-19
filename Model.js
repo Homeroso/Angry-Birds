@@ -132,24 +132,29 @@ class SlingShot {
       mc.mouse.button === -1 &&
       this.sling.bodyB.position.x > this.sling.pointA.x + 10
     ) {
-      /* Soltar el pájaro de la resortera */
       this.sling.bodyB.collisionFilter.category = 1;
       this.sling.bodyB = null;
 
       // Verificar la velocidad del pájaro y eliminarlo si es baja
       const checkVelocity = setInterval(() => {
-        const velocity = Math.sqrt(
-          this.bird.body.velocity.x ** 2 + this.bird.body.velocity.y ** 2
-        );
-        console.log(velocity);
-        if (velocity < 0.5) {
-          // Umbral de velocidad baja
-          console.log("llego");
+        this.bird = bird;
+        if (this.bird && this.bird.body) {
+          const velocity = Math.sqrt(
+            this.bird.body.velocity.x ** 2 + this.bird.body.velocity.y ** 2
+          );
+          console.log(velocity);
+          if (velocity < 0.5) {
+            console.log("llego");
+            clearInterval(checkVelocity);
+            setTimeout(() => {
+              if (this.bird && this.bird.body) {
+                World.remove(world, this.bird.body);
+                this.bird.body = null;
+              }
+            }, 3000); // Eliminar después de 3 segundos
+          }
+        } else {
           clearInterval(checkVelocity);
-          setTimeout(() => {
-            World.remove(world, this.bird.body);
-            this.bird.body = null;
-          }, 3000); // Eliminar después de 3 segundos
         }
       }, 100); // Verificar cada 100 ms
     }
@@ -157,6 +162,7 @@ class SlingShot {
 
   attach(bird) {
     /* Volver a unir el pájaro a la resortera */
+    this.bird = bird.body;
     this.sling.bodyB = bird.body;
   }
 }

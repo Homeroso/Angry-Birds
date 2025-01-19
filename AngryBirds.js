@@ -149,8 +149,12 @@ function draw() {
 
 function keyPressed() {
   if (key == " ") {
-    /* Reiniciar el pájaro cuando se presiona la barra espaciadora */
-    World.remove(world, bird.body);
+    // Eliminar el pájaro actual, si existe
+    if (bird && bird.body) {
+      World.remove(world, bird.body);
+      bird = null;
+    }
+    // Crear un nuevo pájaro
     const index = floor(random(0, birdImg.length));
     bird = new Bird(100, 375, 25, 2, birdImg[index]);
     slingShot.attach(bird);
