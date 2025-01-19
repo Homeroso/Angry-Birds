@@ -158,6 +158,7 @@ class SlingShot {
       slingShotSound.play();
       // Pausa sonido de estiramiento de la resortera
       slingStretch.stop();
+      ajuniga.play();
 
       /* Soltar el pájaro de la resortera */
       this.sling.bodyB.collisionFilter.category = 1;
@@ -209,6 +210,7 @@ class Pig {
         );
 
         this.life -= impactForce; // Ajusta el factor según sea necesario
+
         if (this.life <= 0) {
           this.isHit = true;
           setTimeout(() => {

@@ -35,9 +35,11 @@ function preload() {
   backgroundImg = loadImage('assets/background.jpg');
 
   slingStretch = loadSound('assets/slingStretch.mp3');
-  slingShotSound = loadSound('assets/slingShotSound.mp3');
   slingStretch.setVolume(0.2);
+  slingShotSound = loadSound('assets/slingShotSound.mp3');
   slingShotSound.setVolume(8);
+  ajuniga = loadSound('assets/ajuniga.mp3');
+  ajuniga.setVolume(0.5);
 }
 
 function setup() {
