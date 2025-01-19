@@ -13,13 +13,13 @@ function showEndScreen(stars) {
   textSize(25)
   text("Press r to play again", width /2, height - 50);
 
-  // Display stars
+  // Mostrar estrellas
   for (let i = 0; i < 3; i++) {
     if (i < stars) {
-      // Draw filled star
-      fill(255, 215, 0); // Gold color
+      // Dibujar estrella llena
+      fill(255, 215, 0); 
     } else {
-      // Draw empty star
+      // Dibujar estrella vacia
       noFill();
       stroke(255, 215, 0); // Gold color
     }
@@ -43,8 +43,24 @@ function star(x, y, radius1, radius2, npoints) {
   endShape(CLOSE);
 }
 
+function calculateStars() {
+  let stars = 0;
+
+  // Example criteria: number of birds used
+
+  if (birdLimit >= 4) {
+    stars = 3; // Perfect score
+  } else if (4 > birdLimit >= 2) {
+    stars = 2; // Good score
+  } else {
+    stars = 1; // Poor score
+  }
+
+  return stars;
+}
+
 // Call this function when the game ends
 function endGame() {
-  //let stars = calculateStars(); // Implement this function based on your game logic
-  showEndScreen(2);
+  let stars = calculateStars(); // Implement this function based on your game logic
+  showEndScreen(stars);
 }

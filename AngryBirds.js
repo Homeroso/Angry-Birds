@@ -35,16 +35,7 @@ function setup() {
   World.add(world, mc)
   ground = new Ground(width/2, height - 10, width, 20, grassImg);
   
-  //Create level structures)
-  generateBridgeStructure(670, height - 20, 30, 30, 90, 5, 60)
-  generateTowerStructure(640, height - 20, 30, 30, 2);
-  generateTowerStructure(610, height - 20, 30, 30, 3);
-  generateTowerStructure(580, height - 20, 30, 30, 5);
-  generateTowerStructure(520, height - 20, 30, 30, 5);
-  generateTowerStructure(550, height - 20, 30, 30, 4);
-  generateTowerStructure(490, height - 20, 30, 30, 3);
-  generateTowerStructure(460, height - 20, 30, 30, 2);
-  generateBridgeStructure(370, height - 20, 30, 30, 90, 5, 60)
+  createLevelStructure();
   
   bird = new Bird(100, 375, 15, 2, birdImg[0]);
   
