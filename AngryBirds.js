@@ -33,6 +33,11 @@ function preload() {
   pigImg = loadImage('assets/pig.png');
   slingShotImg = loadImage('assets/slingshot.png');
   backgroundImg = loadImage('assets/background.jpg');
+
+  slingStretch = loadSound('assets/slingStretch.mp3');
+  slingShotSound = loadSound('assets/slingShotSound.mp3');
+  slingStretch.setVolume(0.2);
+  slingShotSound.setVolume(8);
 }
 
 function setup() {
