@@ -8,6 +8,8 @@ class Box {
     this.img = img;
     this.initialPosition = { x: x, y: y };
     this.life = life;
+    this.tint = color(255, 255, 255);
+    this.checkVelocity = null;
     /* Agregar el cuerpo al mundo */
     World.add(world, this.body);
   }
@@ -18,6 +20,7 @@ class Box {
     translate(this.body.position.x, this.body.position.y);
     rotate(this.body.angle);
     imageMode(CENTER);
+    tint(this.tint);
     /* Mostrar la imagen de la caja */
     image(this.img, 0, 0, this.w, this.h);
     pop();
@@ -40,6 +43,7 @@ class Box {
         this.life -= impactForce;
         if (this.life <= 0) {
           this.isDeath = true;
+          this.tint = color(230, 0, 0);
           setTimeout(() => {
             World.remove(world, this.body);
             const index = boxes.indexOf(this);
@@ -110,6 +114,7 @@ class SlingShot {
     this.isStretched = false;
     /* Agregar la restricción al mundo */
     World.add(world, this.sling);
+    this.bird = bird;
   }
 
   show() {
@@ -163,22 +168,52 @@ class SlingShot {
       /* Soltar el pájaro de la resortera */
       this.sling.bodyB.collisionFilter.category = 1;
       this.sling.bodyB = null;
+
+      // Verificar la velocidad del pájaro y eliminarlo si es baja
+      this.checkVelocity = setInterval(() => {
+        this.bird = bird;
+        if (this.bird && this.bird.body) {
+          const velocity = Math.sqrt(
+            this.bird.body.velocity.x ** 2 + this.bird.body.velocity.y ** 2
+          );
+          console.log(velocity);
+          if (velocity < 0.5) {
+            console.log("llego");
+            clearInterval(this.checkVelocity);
+            setTimeout(() => {
+              if (this.bird && this.bird.body) {
+                World.remove(world, this.bird.body);
+                this.bird.body = null;
+              }
+            }, 3000); // Eliminar después de 3 segundos
+          }
+        } else {
+          clearInterval(this.checkVelocity);
+        }
+      }, 100); // Verificar cada 100 ms
     }
   }
 
   attach(bird) {
+    if (this.checkVelocity) {
+      clearInterval(this.checkVelocity); // Limpiar el intervalo si existe
+    }
     /* Volver a unir el pájaro a la resortera */
+    this.bird = bird.body;
     this.sling.bodyB = bird.body;
   }
 }
+
 class Pig {
-  constructor(x, y, r, life, img, options = {}) {
+  constructor(x, y, r, life, img, deathImg, options = {}) {
     /* Crear un cuerpo circular para el cerdito */
     this.body = Bodies.circle(x, y, r, options);
-    this.isHit = false;
+    this.isDeath = false;
     this.r = r;
     this.img = img;
+    this.deathImg = deathImg;
     this.life = life;
+
     /* Agregar el cuerpo al mundo */
     World.add(world, this.body);
   }
@@ -190,7 +225,11 @@ class Pig {
     translate(this.body.position.x, this.body.position.y);
     rotate(this.body.angle);
     /* Mostrar la imagen del cerdito */
-    image(this.img, 0, 0, 2 * this.r, 2 * this.r);
+    if (this.isDeath) {
+      image(this.deathImg, 0, 0, 2 * this.r, 2 * this.r);
+    } else {
+      image(this.img, 0, 0, 2 * this.r, 2 * this.r);
+    }
     pop();
   }
 
@@ -209,10 +248,11 @@ class Pig {
           `Penetration X: ${penetrationX}, Penetration Y: ${penetrationY}, Impact Force: ${impactForce}`
         );
 
-        this.life -= impactForce; // Ajusta el factor según sea necesario
+
+        this.life -= impactForce;
 
         if (this.life <= 0) {
-          this.isHit = true;
+          this.isDeath = true;
           setTimeout(() => {
             World.remove(world, this.body);
             const index = pigs.indexOf(this);

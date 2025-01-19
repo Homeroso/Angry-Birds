@@ -27,6 +27,13 @@ let engine,
 /*Antes de todo guardamos las imágenes */
 function preload() {
   /* Cargar imágenes de los pájaros, cajas,césped y cerdito */
+
+  birdImg = [loadImage("assets/red.webp"), loadImage("assets/stella.webp")];
+  boxImg = loadImage("assets/box.png");
+  grassImg = loadImage("assets/grass.webp");
+  pigImg = loadImage("assets/pig.png");
+  deathPigImg = loadImage("assets/Hurt_pig.webp");
+
   birdImg = [loadImage('assets/red.webp'), loadImage('assets/stella.webp')];
   boxImg = loadImage('assets/box.png');
   grassImg = loadImage('assets/grass.webp');
@@ -40,6 +47,7 @@ function preload() {
   slingShotSound.setVolume(8);
   ajuniga = loadSound('assets/ajuniga.mp3');
   ajuniga.setVolume(0.5);
+
 }
 
 function setup() {
@@ -83,7 +91,7 @@ function setup() {
   slingShot = new SlingShot(bird);
 
   /*Crear cerdito*/
-  pig = new Pig(200, 300, 25, 100, pigImg);
+  pig = new Pig(200, 300, 25, 100, pigImg, deathPigImg);
   pigs.push(pig);
 
   // Crear paredes
@@ -145,7 +153,9 @@ function draw() {
 
   /* Mostrar la resortera y el pájaro */
   slingShot.show();
-  bird.show();
+  if (bird.body) {
+    bird.show();
+  }
 
   /*Muestra los cerditos */
   for (const pig of pigs) {
@@ -154,9 +164,12 @@ function draw() {
 }
 
 function keyPressed() {
-  if (key == ' ') {
-    /* Reiniciar el pájaro cuando se presiona la barra espaciadora */
-    World.remove(world, bird.body);
+  if (key == " ") {
+    // Eliminar el pájaro actual, si existe
+    if (bird && bird.body) {
+      World.remove(world, bird.body);
+      bird = null;
+    }
     const index = floor(random(0, birdImg.length));
     bird = new Bird(100, 375, 25, 2, birdImg[index]);
     slingShot.attach(bird);
