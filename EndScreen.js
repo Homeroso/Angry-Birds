@@ -49,13 +49,16 @@ function star(x, y, radius1, radius2, npoints) {
 function calculateStars() {
   let stars = 0;
 
-  if (birdLimit >= 4) {
-    stars = 3; 
-  } else if (4 > birdLimit >= 2) {
-    stars = 2; 
-  } else if (birdLimit === 1) {
-    stars = 1; 
-  } else {
+  if (pigs.length === 0){
+    if (birdLimit >= 4) {
+      stars = 3; 
+    } else if (4 > birdLimit >= 2) {
+      stars = 2; 
+    } else if (birdLimit < 2) {
+      stars = 1; 
+    } 
+  }
+  else {
     stars = 0;
   }
 
