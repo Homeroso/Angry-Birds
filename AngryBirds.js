@@ -53,6 +53,11 @@ function preload() {
   ajuniga.setVolume(0.5);
   ambient = loadSound('assets/ambient.mp3');
   ambient.setVolume(0.15);
+  collision1 = loadSound('assets/colision1.mp3');
+  collision2 = loadSound('assets/colision2.mp3');
+  collision3 = loadSound('assets/colision3.mp3');
+  collision4 = loadSound('assets/colision4.mp3');
+  collisionSounds = [collision1, collision2, collision3, collision4];
 }
 
 function setup() {
@@ -137,9 +142,12 @@ function setup() {
   Events.on(engine, 'collisionStart', function (event) {
     for (const box of boxes) {
       box.checkCollision(event);
-      for (const pig of pigs) {
-        pig.checkCollision(event);
-      }
+    }
+    for (const pig of pigs) {
+      pig.checkCollision(event);
+    }
+    if (bird) {
+      bird.checkCollision(event);
     }
   });
 
