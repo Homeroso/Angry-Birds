@@ -262,4 +262,81 @@ function keyPressed() {
     bird = new Bird(200, 375, 25, 2, index); // Move the slingshot to the right
     slingShot.attach(bird);
   }
+
+  if (key == "r") {
+    restartGame();
+  }
+}
+
+function restartGame() {
+  frameCount = 0;
+  World.clear(world);
+  Engine.clear(engine);
+
+  pigs = [];
+  boxes = [];
+
+  /* Reiniciar límite de pajaros*/
+  birdLimit = 5;
+
+  /* Crear y configurar el ratón */
+  const mouse = Mouse.create(canvas.elt);
+  mouse.pixelRatio = pixelDensity();
+
+  /* Crear y agregar la restricción del ratón al mundo */
+  mc = MouseConstraint.create(engine, {
+    mouse: mouse,
+    collisionFilter: {
+      mask: 2,
+    },
+  });
+  World.add(world, mc);
+
+  /* Crear el suelo */
+  ground = new Ground(width / 2, height - 10, width, 20, grassImg);
+
+  /* Crear las cajas y agregarlas al array */
+  createLevelStructure();
+
+  /* Crear el pájaro y la resortera */
+  bird = new Bird(100, 375, 25, 2, birdImg[0]);
+  slingShot = new SlingShot(bird);
+
+  // Crear paredes
+  const wallThickness = 50;
+  const walls = [
+    Bodies.rectangle(width / 2, -wallThickness / 2, width, wallThickness, {
+      isStatic: true,
+    }), // Pared superior
+    Bodies.rectangle(
+      width / 2,
+      height + wallThickness / 2,
+      width,
+      wallThickness,
+      { isStatic: true }
+    ), // Pared inferior
+    Bodies.rectangle(-wallThickness / 2, height / 2, wallThickness, height, {
+      isStatic: true,
+    }), // Pared izquierda
+    Bodies.rectangle(
+      width + wallThickness / 2,
+      height / 2,
+      wallThickness,
+      height,
+      { isStatic: true }
+    ), // Pared derecha
+  ];
+
+  // Añadir paredes al mundo
+  World.add(world, walls);
+
+  /*Manejador de eventos*/
+  Events.on(engine, "collisionStart", function (event) {
+    for (const box of boxes) {
+      box.checkCollision(event);
+      for (const pig of pigs) {
+        pig.checkCollision(event);
+      }
+    }
+  });
 }
