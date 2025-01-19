@@ -8,6 +8,7 @@ class Box {
     this.img = img;
     this.initialPosition = { x: x, y: y };
     this.life = life;
+    this.tint = color(255, 255, 255);
     /* Agregar el cuerpo al mundo */
     World.add(world, this.body);
   }
@@ -18,6 +19,7 @@ class Box {
     translate(this.body.position.x, this.body.position.y);
     rotate(this.body.angle);
     imageMode(CENTER);
+    tint(this.tint);
     /* Mostrar la imagen de la caja */
     image(this.img, 0, 0, this.w, this.h);
     pop();
@@ -40,6 +42,7 @@ class Box {
         this.life -= impactForce;
         if (this.life <= 0) {
           this.isDeath = true;
+          this.tint = color(230, 0, 0);
           setTimeout(() => {
             World.remove(world, this.body);
             const index = boxes.indexOf(this);
@@ -108,6 +111,7 @@ class SlingShot {
     });
     /* Agregar la restricción al mundo */
     World.add(world, this.sling);
+    this.bird = bird;
   }
 
   show() {
@@ -131,6 +135,23 @@ class SlingShot {
       /* Soltar el pájaro de la resortera */
       this.sling.bodyB.collisionFilter.category = 1;
       this.sling.bodyB = null;
+
+      // Verificar la velocidad del pájaro y eliminarlo si es baja
+      const checkVelocity = setInterval(() => {
+        const velocity = Math.sqrt(
+          this.bird.body.velocity.x ** 2 + this.bird.body.velocity.y ** 2
+        );
+        console.log(velocity);
+        if (velocity < 0.5) {
+          // Umbral de velocidad baja
+          console.log("llego");
+          clearInterval(checkVelocity);
+          setTimeout(() => {
+            World.remove(world, this.bird.body);
+            this.bird.body = null;
+          }, 3000); // Eliminar después de 3 segundos
+        }
+      }, 100); // Verificar cada 100 ms
     }
   }
 
@@ -139,14 +160,17 @@ class SlingShot {
     this.sling.bodyB = bird.body;
   }
 }
+
 class Pig {
-  constructor(x, y, r, life, img, options = {}) {
+  constructor(x, y, r, life, img, deathImg, options = {}) {
     /* Crear un cuerpo circular para el cerdito */
     this.body = Bodies.circle(x, y, r, options);
-    this.isHit = false;
+    this.isDeath = false;
     this.r = r;
     this.img = img;
+    this.deathImg = deathImg;
     this.life = life;
+
     /* Agregar el cuerpo al mundo */
     World.add(world, this.body);
   }
@@ -158,7 +182,11 @@ class Pig {
     translate(this.body.position.x, this.body.position.y);
     rotate(this.body.angle);
     /* Mostrar la imagen del cerdito */
-    image(this.img, 0, 0, 2 * this.r, 2 * this.r);
+    if (this.isDeath) {
+      image(this.deathImg, 0, 0, 2 * this.r, 2 * this.r);
+    } else {
+      image(this.img, 0, 0, 2 * this.r, 2 * this.r);
+    }
     pop();
   }
 
@@ -177,9 +205,9 @@ class Pig {
           `Penetration X: ${penetrationX}, Penetration Y: ${penetrationY}, Impact Force: ${impactForce}`
         );
 
-        this.life -= impactForce; // Ajusta el factor según sea necesario
+        this.life -= impactForce;
         if (this.life <= 0) {
-          this.isHit = true;
+          this.isDeath = true;
           setTimeout(() => {
             World.remove(world, this.body);
             const index = pigs.indexOf(this);

@@ -31,6 +31,7 @@ function preload() {
   boxImg = loadImage("assets/box.png");
   grassImg = loadImage("assets/grass.webp");
   pigImg = loadImage("assets/pig.png");
+  deathPigImg = loadImage("assets/Hurt_pig.webp");
 }
 
 function setup() {
@@ -74,7 +75,7 @@ function setup() {
   slingShot = new SlingShot(bird);
 
   /*Crear cerdito*/
-  pig = new Pig(200, 300, 25, 100, pigImg);
+  pig = new Pig(200, 300, 25, 100, pigImg, deathPigImg);
   pigs.push(pig);
 
   // Crear paredes
@@ -136,7 +137,9 @@ function draw() {
 
   /* Mostrar la resortera y el pájaro */
   slingShot.show();
-  bird.show();
+  if (bird.body) {
+    bird.show();
+  }
 
   /*Muestra los cerditos */
   for (const pig of pigs) {
