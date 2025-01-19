@@ -34,20 +34,14 @@ let engine,
 function preload() {
   /* Cargar imágenes de los pájaros, cajas,césped y cerdito */
 
-  birdImg = [loadImage("assets/red.webp"), loadImage("assets/stella.webp")];
   boxImg = loadImage("assets/box.png");
   grassImg = loadImage("assets/grass.webp");
   pigImg = loadImage("assets/pig.png");
   deathPigImg = loadImage("assets/Hurt_pig.webp");
-
-  birdImg = [loadImage("assets/red.webp"), loadImage("assets/stella.webp")];
-  boxImg = loadImage("assets/box.png");
-  woodImg = loadImage("assets/table.jpg");
-  grassImg = loadImage("assets/grass.webp");
-  pigImg = loadImage("assets/pig.png");
   slingShotImg = loadImage("assets/slingshot.png");
   backgroundImg = loadImage("assets/background.jpg");
   volumeIcon = loadImage("assets/volume.png");
+  woodImg = loadImage("assets/table.jpg");
   // Sonidos
   slingStretch = loadSound("assets/slingStretch.mp3");
   slingStretch.setVolume(0.2);
@@ -55,13 +49,52 @@ function preload() {
   slingShotSound.setVolume(8);
   ajuniga = loadSound("assets/ajuniga.mp3");
   ajuniga.setVolume(0.5);
+  ikusa = loadSound("assets/ikusa.mp3");
+  ikusa.setVolume(0.5);
+  ui = loadSound("assets/ui.mp3");
+  ui.setVolume(0.5);
   ambient = loadSound("assets/ambient.mp3");
   ambient.setVolume(0.15);
-  collision1 = loadSound("assets/colision1.mp3");
-  collision2 = loadSound("assets/colision2.mp3");
-  collision3 = loadSound("assets/colision3.mp3");
-  collision4 = loadSound("assets/colision4.mp3");
-  collisionSounds = [collision1, collision2, collision3, collision4];
+
+  // Informacion de los pajaros
+  birds = [
+    {
+      // Red bird
+      name: "red",
+      img: loadImage("assets/red.webp"),
+      flyingSound: ajuniga,
+      collisionSounds: [
+        loadSound("assets/colision1.mp3"),
+        loadSound("assets/colision2.mp3"),
+        loadSound("assets/colision3.mp3"),
+        loadSound("assets/colision4.mp3"),
+      ],
+    },
+    {
+      // Stella bird
+      name: "yellow",
+      img: loadImage("assets/yellow.png"),
+      flyingSound: ui,
+      collisionSounds: [
+        loadSound("assets/colisionUi1.mp3"),
+        loadSound("assets/colisionUi2.mp3"),
+        loadSound("assets/colisionUi3.mp3"),
+        loadSound("assets/colisionUi4.mp3"),
+      ],
+    },
+    {
+      // Stella bird
+      name: "stella",
+      img: loadImage("assets/stella.webp"),
+      flyingSound: ikusa,
+      collisionSounds: [
+        loadSound("assets/colisionIkusa1.mp3"),
+        loadSound("assets/colisionIkusa2.mp3"),
+        loadSound("assets/colisionIkusa3.mp3"),
+        loadSound("assets/colisionIkusa4.mp3"),
+      ],
+    },
+  ];
 }
 
 function setup() {
@@ -101,10 +134,6 @@ function setup() {
   /* Crear el pájaro y la resortera */
   bird = new Bird(100, 375, 25, 2, birdImg[0]);
   slingShot = new SlingShot(bird);
-
-  /*Crear cerdito*/
-  pig = new Pig(200, 300, 25, 100, pigImg, deathPigImg);
-  pigs.push(pig);
 
   // Crear paredes
   const wallThickness = 50;
@@ -207,6 +236,7 @@ function createNewBird() {
   if (bird && bird.body) {
     World.remove(world, bird.body);
     bird = null;
+    birdLimit -= 1;
   }
   // Crear un nuevo pájaro
   const index = floor(random(0, birdImg.length));
@@ -220,6 +250,7 @@ function keyPressed() {
     if (bird && bird.body) {
       World.remove(world, bird.body);
       bird = null;
+      birdLimit -= 1;
     }
     // Crea indice entre 0 y birds.length
     const index = floor(random(0, birds.length));

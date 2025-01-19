@@ -8,15 +8,6 @@ class Box {
     img,
     options = { restitution: 0.1, friction: 1 }
   ) {
-  constructor(
-    x,
-    y,
-    w,
-    h,
-    life,
-    img,
-    options = { restitution: 0.1, friction: 1 }
-  ) {
     /* Crear un cuerpo rectangular */
     this.body = Bodies.rectangle(x, y, w, h, options);
     this.isDeath = false;
@@ -62,16 +53,9 @@ class Box {
             `Penetration X: ${penetrationX}, Penetration Y: ${penetrationY}, Impact Force: ${impactForce}`
           );
 
-          setTimeout(() => {
-            if (impactForce > 10) {
-              this.life -= impactForce * 10;
-            }
-          }, 2000);
-          if (impactForce > 8) {
-            // play a random colision sound
-            const random = Math.floor(Math.random() * 3);
-            collisionSounds[random].play();
-            ajuniga.stop();
+          console.log("framecount", frameCount);
+          if (impactForce > 10 && frameCount > 120) {
+            this.life -= impactForce * 10;
           }
 
           if (this.life <= 0) {
@@ -253,8 +237,6 @@ class SlingShot {
                 World.remove(world, this.bird.body);
                 this.bird.body = null;
                 createNewBird();
-
-                birdLimit--;
               }
             }, 3000); // Eliminar después de 3 segundos
           }
@@ -316,7 +298,9 @@ class Pig {
 
         // Imprimir los valores de penetración y la fuerza del impacto
 
-        this.life -= impactForce * 8;
+        if (impactForce > 10 && frameCount > 60) {
+          this.life -= impactForce * 15;
+        }
 
         if (this.life <= 0) {
           this.isDeath = true;

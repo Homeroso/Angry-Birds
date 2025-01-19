@@ -47,7 +47,7 @@ function generateBridgeStructure(
       startX + woodWidth / 2,
       startY - blockHeight - woodHeight,
       15,
-      50,
+      30,
       pigImg,
       deathPigImg
     )
@@ -82,7 +82,7 @@ function generateTowerStructure(
       startX,
       startY - towerHeight * blockHeight - 10,
       15,
-      100,
+      30,
       pigImg,
       deathPigImg
     )
