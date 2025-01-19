@@ -263,16 +263,17 @@ function keyPressed() {
     slingShot.attach(bird);
   }
 
-  if(key == 'r'){
+  if (key == "r") {
     restartGame();
   }
 }
 
-function restartGame(){
+function restartGame() {
+  frameCount = 0;
   World.clear(world);
   Engine.clear(engine);
-  
-  pigs= [];
+
+  pigs = [];
   boxes = [];
 
   /* Reiniciar límite de pajaros*/
@@ -300,10 +301,6 @@ function restartGame(){
   /* Crear el pájaro y la resortera */
   bird = new Bird(100, 375, 25, 2, birdImg[0]);
   slingShot = new SlingShot(bird);
-
-  /*Crear cerdito*/
-  pig = new Pig(200, 300, 25, 100, pigImg, deathPigImg);
-  pigs.push(pig);
 
   // Crear paredes
   const wallThickness = 50;
@@ -334,7 +331,7 @@ function restartGame(){
   World.add(world, walls);
 
   /*Manejador de eventos*/
-  Events.on(engine, 'collisionStart', function (event) {
+  Events.on(engine, "collisionStart", function (event) {
     for (const box of boxes) {
       box.checkCollision(event);
       for (const pig of pigs) {
