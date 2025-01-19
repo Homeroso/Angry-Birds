@@ -1,5 +1,5 @@
 class Box {
-  constructor(x, y, w, h, life, img, options = {}) {
+  constructor(x, y, w, h, life, img, options = {restitution:0.1, friction: 1} ) {
     /* Crear un cuerpo rectangular */
     this.body = Bodies.rectangle(x, y, w, h, options);
     this.isDeath = false;
@@ -39,10 +39,10 @@ class Box {
         console.log(
           `Penetration X: ${penetrationX}, Penetration Y: ${penetrationY}, Impact Force: ${impactForce}`
         );
-
-        this.life -= impactForce;
-        if (impactForce > 8) {
-        }
+        
+        setTimeout(() => {if (impactForce > 10 ) {
+          this.life -= impactForce;
+        }}, 2000)
 
         if (this.life <= 0) {
           this.isDeath = true;
@@ -189,6 +189,8 @@ class SlingShot {
               if (this.bird && this.bird.body) {
                 World.remove(world, this.bird.body);
                 this.bird.body = null;
+                birdLimit--;
+                console.log(birdLimit);
               }
             }, 3000); // Eliminar después de 3 segundos
           }
