@@ -52,7 +52,7 @@ function calculateStars() {
   if (pigs.length === 0){
     if (birdLimit >= 4) {
       stars = 3; 
-    } else if (4 > birdLimit >= 2) {
+    } else if (birdLimit >= 2 && birdLimit < 4) {
       stars = 2; 
     } else if (birdLimit < 2) {
       stars = 1; 
